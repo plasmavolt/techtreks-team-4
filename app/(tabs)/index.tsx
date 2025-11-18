@@ -5,6 +5,8 @@ const app = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>SideQuest</Text>
+      <Text style={styles.text1}>Welcome to SideQuest</Text>
+
     </View>
   )
 }
@@ -24,10 +26,14 @@ text: {
   fontSize: 42,
   fontWeight: 'bold',
   textAlign: 'center',
+},
 
+text1: {
 
-
-}
+  color: 'blue',
+  fontSize: 32,
+  textAlign: 'center',
+},
 
 
 })
