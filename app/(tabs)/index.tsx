@@ -22,10 +22,12 @@ container: {
 
 text: {
 
-  color: 'white',
+  color: 'red',
   fontSize: 42,
   fontWeight: 'bold',
   textAlign: 'center',
+  bottom: -100,
+  position: 'relative',
 },
 
 text1: {
