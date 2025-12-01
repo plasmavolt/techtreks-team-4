@@ -23,7 +23,7 @@ export default function TabTwoScreen() {
         <IconSymbol
           size={310}
           color="#000000ff"
-          name="chevron.left.forwardslash.chevron.right"
+          name="person.3.sequence"
           style={styles.headerImage}
         />
       }>
@@ -31,9 +31,9 @@ export default function TabTwoScreen() {
         <ThemedText
           type="title"
           style={{
-            fontFamily: Fonts.rounded,
+            fontFamily: Fonts.serif,
           }}>
-          Explore
+          Profile
         </ThemedText>
       </ThemedView>
       <ThemedText>This app includes example code to help you get started.</ThemedText>

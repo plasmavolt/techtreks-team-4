@@ -1,9 +1,12 @@
+import { Fonts } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 const app = () => {
   const router = useRouter()
+  const colorScheme = useColorScheme()
 
   return (
     <View style={styles.container}>
@@ -38,15 +41,15 @@ container: {
 },
 
 text: {
-  color: 'yellow',
-  fontSize: 42,
+  color: '#2596be',
+  fontSize: 70,
   fontWeight: 'bold',
   textAlign: 'center',
-  marginBottom: 20,
+  fontFamily: Fonts.sans,
 },
 
 text1: {
-  color: 'yellow',
+  color: '#2596be',
   fontSize: 32,
   textAlign: 'center',
   marginBottom: 40,
@@ -59,8 +62,9 @@ navigationContainer: {
 },
 
 navigationHint: {
-  color: 'yellow',
+  color: 'white',
   fontSize: 16,
+  fontFamily: Fonts.serif,
   textAlign: 'center',
   marginBottom: 20,
   paddingHorizontal: 20,
@@ -79,6 +83,7 @@ navButtonText: {
   fontSize: 16,
   fontWeight: '600',
   textAlign: 'center',
+  fontFamily: Fonts.serif,
 },
 
 })
