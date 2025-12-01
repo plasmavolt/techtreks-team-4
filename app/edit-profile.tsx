@@ -4,15 +4,15 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -96,10 +96,10 @@ export default function EditProfileScreen() {
       'Profile Picture',
       'Choose an option',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' as const },
         { text: 'Take Photo', onPress: takePhoto },
         { text: 'Choose from Library', onPress: pickImage },
-        ...(profilePicture ? [{ text: 'Remove Photo', style: 'destructive', onPress: () => setProfilePicture(null) }] : []),
+        ...(profilePicture ? [{ text: 'Remove Photo', style: 'destructive' as const, onPress: () => setProfilePicture(null) }] : []),
       ]
     );
   };
@@ -171,13 +171,12 @@ export default function EditProfileScreen() {
             Name
           </ThemedText>
           <TextInput
-            style={[styles.input, { color: Colors[colorScheme ?? 'light'].text }]}
+            style={[styles.input, { color: Colors[colorScheme ?? 'light'].text, fontFamily: Fonts.sans }]}
             placeholder="Enter your name"
             placeholderTextColor="#999"
             value={name}
             onChangeText={setName}
             autoCapitalize="words"
-            fontFamily={Fonts.sans}
           />
         </ThemedView>
 

@@ -44,15 +44,17 @@ text: {
   color: '#2596be',
   fontSize: 70,
   fontWeight: 'bold',
+  position: 'sticky',
   textAlign: 'center',
-  fontFamily: Fonts.sans,
+  fontFamily: Fonts.rounded,
 },
 
 text1: {
   color: '#2596be',
-  fontSize: 32,
+  fontSize: 25,
   textAlign: 'center',
   marginBottom: 40,
+  fontFamily: Fonts.rounded,
 },
 
 navigationContainer: {

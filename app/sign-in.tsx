@@ -3,15 +3,15 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function SignInScreen() {
@@ -25,8 +25,14 @@ export default function SignInScreen() {
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+    // Validation
+    if (!email || !email.trim()) {
+      Alert.alert('Error', 'Please enter your email');
+      return;
+    }
+
+    if (!password) {
+      Alert.alert('Error', 'Please enter your password');
       return;
     }
 
@@ -35,22 +41,35 @@ export default function SignInScreen() {
       return;
     }
 
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+
     setIsLoading(true);
     
     try {
       let success = false;
       if (isSignUp) {
-        success = await signUp(email, password, name);
+        success = await signUp(email.trim(), password, name.trim() || undefined);
       } else {
-        success = await signIn(email, password);
+        success = await signIn(email.trim(), password);
       }
 
       if (success) {
         router.replace('/(tabs)');
       } else {
-        Alert.alert('Error', isSignUp ? 'Failed to create account' : 'Invalid email or password');
+        Alert.alert(
+          'Error', 
+          isSignUp 
+            ? 'Failed to create account. Please check your information and try again.' 
+            : 'Invalid email or password. Please try again.'
+        );
       }
     } catch (error) {
+      console.error('Submit error:', error);
       Alert.alert('Error', 'Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);

@@ -21,14 +21,18 @@ function RootLayoutNav() {
     if (isLoading) return;
 
     const inAuthGroup = segments[0] === '(tabs)';
+    const isSignIn = segments[0] === 'sign-in';
+    const isEditProfile = segments[0] === 'edit-profile';
+    const isModal = segments[0] === 'modal';
 
     if (!user && inAuthGroup) {
       // User is not signed in and trying to access protected route
       router.replace('/sign-in');
-    } else if (user && !inAuthGroup) {
+    } else if (user && isSignIn) {
       // User is signed in and trying to access sign-in page
       router.replace('/(tabs)');
     }
+    // Allow edit-profile and modal routes when user is signed in
   }, [user, isLoading, segments]);
 
   return (

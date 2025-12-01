@@ -19,9 +19,17 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USER_KEY = 'user';
+// Helper function to sanitize email for use as SecureStore key
+// SecureStore keys cannot contain special characters like @, ., etc.
+const sanitizeKey = (email: string): string => {
+  return email.replace(/[^a-zA-Z0-9]/g, '_');
+};
+
+// Helper function to get account-specific keys
+const getUserKey = (email: string) => `user_${sanitizeKey(email)}`;
+const getTokenKey = (email: string) => `auth_token_${sanitizeKey(email)}`;
+const USER_KEY = 'user'; // For current logged-in user email
 const TOKEN_KEY = 'auth_token';
-const PROFILE_PICTURE_KEY = 'profile_picture';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -34,14 +42,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadUser = async () => {
     try {
-      const userData = await SecureStore.getItemAsync(USER_KEY);
-      const profilePicture = await SecureStore.getItemAsync(PROFILE_PICTURE_KEY);
-      if (userData) {
-        const user = JSON.parse(userData);
-        if (profilePicture) {
-          user.profilePicture = profilePicture;
+      // Get the current logged-in user's email
+      const currentUserEmail = await SecureStore.getItemAsync(USER_KEY);
+      if (currentUserEmail) {
+        // Load user data for this specific account
+        const userDataKey = getUserKey(currentUserEmail);
+        const userData = await SecureStore.getItemAsync(userDataKey);
+        if (userData) {
+          const user = JSON.parse(userData);
+          setUser(user);
         }
-        setUser(user);
       }
     } catch (error) {
       console.error('Error loading user:', error);
@@ -61,9 +71,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Mock validation (replace with real API)
       if (email && password.length >= 6) {
-        const userData: User = { email };
-        await SecureStore.setItemAsync(USER_KEY, JSON.stringify(userData));
-        await SecureStore.setItemAsync(TOKEN_KEY, 'mock_token_' + Date.now());
+        // Check if user already exists (to preserve profile data)
+        const userDataKey = getUserKey(email);
+        const existingUserData = await SecureStore.getItemAsync(userDataKey);
+        
+        let userData: User;
+        if (existingUserData) {
+          // User exists, preserve their profile data
+          userData = JSON.parse(existingUserData);
+        } else {
+          // New user, create fresh data
+          userData = { email };
+        }
+        
+        // Store user data with email-based key
+        await SecureStore.setItemAsync(userDataKey, JSON.stringify(userData));
+        // Store current logged-in user email
+        await SecureStore.setItemAsync(USER_KEY, email);
+        // Store token with email-based key
+        const tokenKey = getTokenKey(email);
+        await SecureStore.setItemAsync(tokenKey, 'mock_token_' + Date.now());
         setUser(userData);
         return true;
       }
@@ -76,19 +103,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string, name?: string): Promise<boolean> => {
     try {
+      // Basic validation
+      if (!email || !email.trim()) {
+        console.error('Sign up error: Email is required');
+        return false;
+      }
+
+      if (!password || password.length < 6) {
+        console.error('Sign up error: Password must be at least 6 characters');
+        return false;
+      }
+
+      // Basic email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        console.error('Sign up error: Invalid email format');
+        return false;
+      }
+
       // TODO: Replace with actual API call
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock validation (replace with real API)
-      if (email && password.length >= 6) {
-        const userData: User = { email, name };
-        await SecureStore.setItemAsync(USER_KEY, JSON.stringify(userData));
-        await SecureStore.setItemAsync(TOKEN_KEY, 'mock_token_' + Date.now());
-        setUser(userData);
-        return true;
-      }
-      return false;
+      const trimmedEmail = email.trim();
+      const userData: User = { 
+        email: trimmedEmail, 
+        ...(name && name.trim() && { name: name.trim() })
+      };
+      
+      // Store user data with email-based key
+      const userDataKey = getUserKey(trimmedEmail);
+      await SecureStore.setItemAsync(userDataKey, JSON.stringify(userData));
+      
+      // Store current logged-in user email
+      await SecureStore.setItemAsync(USER_KEY, trimmedEmail);
+      
+      // Store token with email-based key
+      const tokenKey = getTokenKey(trimmedEmail);
+      await SecureStore.setItemAsync(tokenKey, 'mock_token_' + Date.now());
+      
+      setUser(userData);
+      console.log('Sign up successful for:', trimmedEmail);
+      return true;
     } catch (error) {
       console.error('Sign up error:', error);
       return false;
@@ -97,8 +153,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async (): Promise<void> => {
     try {
+      // Only clear the current user reference, keep account data
       await SecureStore.deleteItemAsync(USER_KEY);
-      await SecureStore.deleteItemAsync(TOKEN_KEY);
+      // Clear token for current user
+      if (user?.email) {
+        const tokenKey = getTokenKey(user.email);
+        await SecureStore.deleteItemAsync(tokenKey);
+      }
       setUser(null);
     } catch (error) {
       console.error('Sign out error:', error);
@@ -107,8 +168,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getStoredData = async (): Promise<{ user: string | null; token: string | null }> => {
     try {
-      const userData = await SecureStore.getItemAsync(USER_KEY);
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      // Get current user email
+      const currentUserEmail = await SecureStore.getItemAsync(USER_KEY);
+      if (!currentUserEmail) {
+        return { user: null, token: null };
+      }
+      
+      // Get user data for this account
+      const userDataKey = getUserKey(currentUserEmail);
+      const userData = await SecureStore.getItemAsync(userDataKey);
+      
+      // Get token for this account
+      const tokenKey = getTokenKey(currentUserEmail);
+      const token = await SecureStore.getItemAsync(tokenKey);
+      
       return {
         user: userData,
         token: token,
@@ -121,7 +194,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateProfile = async (updates: { name?: string; profilePicture?: string }): Promise<boolean> => {
     try {
-      if (!user) return false;
+      if (!user || !user.email) return false;
 
       const updatedUser: User = {
         ...user,
@@ -129,15 +202,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...(updates.profilePicture !== undefined && { profilePicture: updates.profilePicture }),
       };
 
-      await SecureStore.setItemAsync(USER_KEY, JSON.stringify(updatedUser));
-      
-      if (updates.profilePicture) {
-        await SecureStore.setItemAsync(PROFILE_PICTURE_KEY, updates.profilePicture);
-      } else if (updates.profilePicture === null) {
-        // Remove profile picture
-        await SecureStore.deleteItemAsync(PROFILE_PICTURE_KEY);
+      // If profilePicture is explicitly set to null, remove it
+      if (updates.profilePicture === null) {
         updatedUser.profilePicture = undefined;
       }
+
+      // Store updated user data with email-based key (per account)
+      const userDataKey = getUserKey(user.email);
+      await SecureStore.setItemAsync(userDataKey, JSON.stringify(updatedUser));
 
       setUser(updatedUser);
       return true;
