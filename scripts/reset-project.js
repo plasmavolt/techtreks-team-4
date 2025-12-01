@@ -26,7 +26,7 @@ export default function Index() {
         justifyContent: "center",
         alignItems: "center",
       }}
-    >
+    >r
       <Text>Edit app/index.tsx to edit this screen.</Text>
     </View>
   );

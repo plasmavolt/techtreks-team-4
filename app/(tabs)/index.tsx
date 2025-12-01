@@ -22,7 +22,7 @@ container: {
 
 text: {
 
-  color: 'red',
+  color: 'yellow',
   fontSize: 42,
   fontWeight: 'bold',
   textAlign: 'center',
@@ -32,7 +32,7 @@ text: {
 
 text1: {
 
-  color: 'blue',
+  color: 'yellow',
   fontSize: 32,
   textAlign: 'center',
 },
