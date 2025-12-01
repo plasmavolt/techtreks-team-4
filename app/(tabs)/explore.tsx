@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { ExternalLink } from '@/components/external-link';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -7,9 +8,14 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { Colors, Fonts } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabTwoScreen() {
+  const router = useRouter();
+  const colorScheme = useColorScheme();
+  const tintColor = Colors[colorScheme ?? 'light'].tint;
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -31,6 +37,18 @@ export default function TabTwoScreen() {
         </ThemedText>
       </ThemedView>
       <ThemedText>This app includes example code to help you get started.</ThemedText>
+      
+      <ThemedView style={styles.navigationSection}>
+        <ThemedText style={styles.navigationHint}>
+          Use the tabs at the bottom to navigate, or use the button below:
+        </ThemedText>
+        <TouchableOpacity 
+          style={[styles.navButton, { backgroundColor: tintColor }]}
+          onPress={() => router.push('/(tabs)/')}
+        >
+          <ThemedText style={styles.navButtonText}>Go to Home Tab</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
       <Collapsible title="File-based routing">
         <ThemedText>
           This app has two screens:{' '}
@@ -108,5 +126,28 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  navigationSection: {
+    marginTop: 20,
+    marginBottom: 20,
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  navigationHint: {
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  navButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    minWidth: 200,
+  },
+  navButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
