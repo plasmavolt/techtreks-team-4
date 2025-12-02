@@ -2,7 +2,7 @@ import { Fonts } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useRouter } from 'expo-router'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
 const app = () => {
   const router = useRouter()
@@ -13,17 +13,6 @@ const app = () => {
       <Text style={styles.text}>SideQuest</Text>
       <Text style={styles.text1}>Welcome to SideQuest</Text>
       
-      <View style={styles.navigationContainer}>
-        <Text style={styles.navigationHint}>
-          Navigate using the tabs at the bottom, or use the button below:
-        </Text>
-        <TouchableOpacity 
-          style={styles.navButton}
-          onPress={() => router.push('/(tabs)/explore')}
-        >
-          <Text style={styles.navButtonText}>Go to Explore Tab</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   )
 }
@@ -44,7 +33,7 @@ text: {
   color: '#2596be',
   fontSize: 70,
   fontWeight: 'bold',
-  position: 'sticky',
+  position: 'relative',
   textAlign: 'center',
   fontFamily: Fonts.rounded,
 },
@@ -64,7 +53,7 @@ navigationContainer: {
 },
 
 navigationHint: {
-  color: 'white',
+  color: 'black',
   fontSize: 16,
   fontFamily: Fonts.serif,
   textAlign: 'center',
@@ -81,7 +70,7 @@ navButton: {
 },
 
 navButtonText: {
-  color: 'white',
+  color: 'black',
   fontSize: 16,
   fontWeight: '600',
   textAlign: 'center',
