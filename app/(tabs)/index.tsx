@@ -2,7 +2,8 @@ import { Fonts } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useRouter } from 'expo-router'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+import MapView, { Marker } from 'react-native-maps'
 
 const app = () => {
   const router = useRouter()
@@ -10,9 +11,24 @@ const app = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>SideQuest</Text>
-      <Text style={styles.text1}>Welcome to SideQuest</Text>
-      
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 40.7831,
+          longitude: -73.9712,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      >
+        <Marker
+          coordinate={{
+            latitude: 40.7831,
+            longitude: -73.9712,
+          }}
+          title="Central Park"
+          description="New York, NY"
+        />
+      </MapView>
     </View>
   )
 }
@@ -23,10 +39,22 @@ const styles = StyleSheet.create({
 
 container: {
   flex: 1,
-  flexDirection: 'column',
+},
+
+map: {
+  flex: 1,
+},
+
+overlay: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
   justifyContent: 'center',
   alignItems: 'center',
   padding: 20,
+  pointerEvents: 'none',
 },
 
 text: {
