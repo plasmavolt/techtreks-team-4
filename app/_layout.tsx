@@ -30,7 +30,7 @@ function RootLayoutNav() {
       router.replace('/sign-in');
     } else if (user && isSignIn) {
       // User is signed in and trying to access sign-in page
-      router.replace('/(tabs)/map');
+      router.replace('/(tabs)');
     }
     // Allow edit-profile and modal routes when user is signed in
   }, [user, isLoading, segments]);
