@@ -9,6 +9,26 @@ const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 export const Colors = {
+  // Brand colors
+  primary: '#2596be',
+  primaryLight: '#e8f4f8',
+
+  // Text colors
+  textPrimary: '#11181C',
+  textSecondary: '#666',
+  textLight: '#888',
+  textWhite: '#fff',
+
+  // Background colors
+  background: '#fff',
+  backgroundDark: '#151718',
+  overlay: 'rgba(255, 255, 255, 0.8)',
+
+  // UI colors
+  border: '#e0e0e0',
+  shadow: '#000',
+  disabled: '#f0f0f0',
+
   light: {
     text: '#11181C',
     background: '#fff',
@@ -51,3 +71,58 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+// Spacing system
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 40,
+};
+
+// Border radius
+export const BorderRadius = {
+  sm: 8,
+  md: 12,
+  lg: 16,
+  full: 9999,
+};
+
+// Font sizes
+export const FontSize = {
+  xs: 12,
+  sm: 14,
+  md: 16,
+  lg: 18,
+  xl: 20,
+  xxl: 24,
+  xxxl: 32,
+  huge: 70,
+};
+
+// Common shadow styles
+export const Shadows = {
+  small: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  medium: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  large: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+};
