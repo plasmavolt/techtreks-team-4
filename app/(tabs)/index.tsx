@@ -2,7 +2,7 @@ import { Fonts } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, StyleSheet, View, Text, TouchableOpacity, Animated } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
 interface Location {
@@ -21,7 +21,7 @@ interface Location {
   categories: string[]
 }
 
-// Mock location data
+// Mock location data. Used for testing only.
 const mockLocations: Location[] = [
   {
     _id: 'mock_1',
@@ -68,20 +68,17 @@ const mockLocations: Location[] = [
 const app = () => {
   const router = useRouter()
   const colorScheme = useColorScheme()
-  const [locations, setLocations] = useState<Location[]>(mockLocations)
-  const [loading, setLoading] = useState(false)
+  const [locations, setLocations] = useState<Location[]>([])
+  const [loading, setLoading] = useState(true)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
 
   useEffect(() => {
-    // fetchLocations() // Uncomment when backend is ready
+    fetchLocations()
   }, [])
-
-  useEffect(() => {
-    console.log('Selected location changed:', selectedLocation?.name || 'none')
-  }, [selectedLocation])
 
   const fetchLocations = async () => {
     try {
+      setLoading(true)
       const response = await fetch('http://10.17.26.59:3000/api/locations')
       const data = await response.json()
       console.log('API Response:', data)
@@ -93,10 +90,10 @@ const app = () => {
         console.warn('No locations data found')
         setLocations([])
       }
-      setLoading(false)
     } catch (error) {
       console.error('Error fetching locations:', error)
       setLocations([])
+    } finally {
       setLoading(false)
     }
   }
@@ -125,7 +122,6 @@ const app = () => {
               console.log('Marker pressed:', location.name)
               setSelectedLocation(location)
             }}
-            title={location.name}
           />
         ))}
       </MapView>
