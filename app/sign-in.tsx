@@ -15,19 +15,19 @@ import {
 } from 'react-native';
 
 export default function SignInScreen() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { signIn, signUp } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async () => {
     // Validation
-    if (!email || !email.trim()) {
-      Alert.alert('Error', 'Please enter your email');
+    if (!username || !username.trim()) {
+      Alert.alert('Error', 'Please enter your username');
       return;
     }
 
@@ -41,31 +41,36 @@ export default function SignInScreen() {
       return;
     }
 
-    // Basic email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      Alert.alert('Error', 'Please enter a valid email address');
+    // Username validation (alphanumeric, underscores, hyphens)
+    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+    if (!usernameRegex.test(username.trim())) {
+      Alert.alert('Error', 'Username can only contain letters, numbers, underscores, and hyphens');
+      return;
+    }
+
+    if (username.trim().length < 3) {
+      Alert.alert('Error', 'Username must be at least 3 characters');
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
       let success = false;
       if (isSignUp) {
-        success = await signUp(email.trim(), password, name.trim() || undefined);
+        success = await signUp(username.trim(), password, name.trim() || undefined);
       } else {
-        success = await signIn(email.trim(), password);
+        success = await signIn(username.trim(), password);
       }
 
       if (success) {
         router.replace('/(tabs)');
       } else {
         Alert.alert(
-          'Error', 
-          isSignUp 
-            ? 'Failed to create account. Please check your information and try again.' 
-            : 'Invalid email or password. Please try again.'
+          'Error',
+          isSignUp
+            ? 'Failed to create account. Please check your information and try again.'
+            : 'Invalid username or password. Please try again.'
         );
       }
     } catch (error) {
@@ -98,16 +103,15 @@ export default function SignInScreen() {
               autoCapitalize="words"
             />
           )}
-          
+
           <TextInput
             style={styles.input}
-            placeholder="Email"
+            placeholder="Username"
             placeholderTextColor="#999"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+            value={username}
+            onChangeText={setUsername}
             autoCapitalize="none"
-            autoComplete="email"
+            autoComplete="username"
           />
 
           <TextInput

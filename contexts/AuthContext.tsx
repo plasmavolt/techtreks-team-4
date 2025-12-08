@@ -5,13 +5,17 @@ interface User {
   email: string;
   name?: string;
   profilePicture?: string;
+  id: string; // username stored here
+  questsCompleted?: number;
+  points?: number;
+  rank?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<boolean>;
-  signUp: (email: string, password: string, name?: string) => Promise<boolean>;
+  signIn: (username: string, password: string) => Promise<boolean>;
+  signUp: (username: string, password: string, name?: string) => Promise<boolean>;
   signOut: () => Promise<void>;
   getStoredData: () => Promise<{ user: string | null; token: string | null }>;
   updateProfile: (updates: { name?: string; profilePicture?: string }) => Promise<boolean>;
@@ -19,16 +23,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper function to sanitize email for use as SecureStore key
-// SecureStore keys cannot contain special characters like @, ., etc.
-const sanitizeKey = (email: string): string => {
-  return email.replace(/[^a-zA-Z0-9]/g, '_');
+// Helper function to sanitize username for use as SecureStore key
+// SecureStore keys cannot contain special characters
+const sanitizeKey = (username: string): string => {
+  return username.replace(/[^a-zA-Z0-9]/g, '_');
 };
 
 // Helper function to get account-specific keys
-const getUserKey = (email: string) => `user_${sanitizeKey(email)}`;
-const getTokenKey = (email: string) => `auth_token_${sanitizeKey(email)}`;
-const USER_KEY = 'user'; // For current logged-in user email
+const getUserKey = (username: string) => `user_${sanitizeKey(username)}`;
+const getTokenKey = (username: string) => `auth_token_${sanitizeKey(username)}`;
+const USER_KEY = 'user'; // For current logged-in username
 const TOKEN_KEY = 'auth_token';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -42,11 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadUser = async () => {
     try {
-      // Get the current logged-in user's email
-      const currentUserEmail = await SecureStore.getItemAsync(USER_KEY);
-      if (currentUserEmail) {
+      // Get the current logged-in username
+      const currentUsername = await SecureStore.getItemAsync(USER_KEY);
+      if (currentUsername) {
         // Load user data for this specific account
-        const userDataKey = getUserKey(currentUserEmail);
+        const userDataKey = getUserKey(currentUsername);
         const userData = await SecureStore.getItemAsync(userDataKey);
         if (userData) {
           const user = JSON.parse(userData);
@@ -60,36 +64,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signIn = async (email: string, password: string): Promise<boolean> => {
+  const signIn = async (username: string, password: string): Promise<boolean> => {
     try {
       // TODO: Replace with actual API call
       // For now, this is a mock authentication
       // In production, you'd call your backend API here
-      
+
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Mock validation (replace with real API)
-      if (email && password.length >= 6) {
+      if (username && password.length >= 6) {
         // Check if user already exists (to preserve profile data)
-        const userDataKey = getUserKey(email);
+        const userDataKey = getUserKey(username);
         const existingUserData = await SecureStore.getItemAsync(userDataKey);
-        
+
         let userData: User;
         if (existingUserData) {
           // User exists, preserve their profile data
           userData = JSON.parse(existingUserData);
         } else {
-          // New user, create fresh data
-          userData = { email };
+          // New user, create fresh data with username as id
+          userData = {
+            email: `${username}@sidequest.app`, // Generate email from username
+            id: username
+          };
         }
-        
-        // Store user data with email-based key
+
+        // Store user data with username-based key
         await SecureStore.setItemAsync(userDataKey, JSON.stringify(userData));
-        // Store current logged-in user email
-        await SecureStore.setItemAsync(USER_KEY, email);
-        // Store token with email-based key
-        const tokenKey = getTokenKey(email);
+        // Store current logged-in username
+        await SecureStore.setItemAsync(USER_KEY, username);
+        // Store token with username-based key
+        const tokenKey = getTokenKey(username);
         await SecureStore.setItemAsync(tokenKey, 'mock_token_' + Date.now());
         setUser(userData);
         return true;
@@ -101,11 +108,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string, name?: string): Promise<boolean> => {
+  const signUp = async (username: string, password: string, name?: string): Promise<boolean> => {
     try {
       // Basic validation
-      if (!email || !email.trim()) {
-        console.error('Sign up error: Email is required');
+      if (!username || !username.trim()) {
+        console.error('Sign up error: Username is required');
         return false;
       }
 
@@ -114,36 +121,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
-      // Basic email format validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email.trim())) {
-        console.error('Sign up error: Invalid email format');
+      // Username validation
+      const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+      if (!usernameRegex.test(username.trim())) {
+        console.error('Sign up error: Invalid username format');
+        return false;
+      }
+
+      if (username.trim().length < 3) {
+        console.error('Sign up error: Username must be at least 3 characters');
         return false;
       }
 
       // TODO: Replace with actual API call
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const trimmedEmail = email.trim();
-      const userData: User = { 
-        email: trimmedEmail, 
+
+      const trimmedUsername = username.trim();
+      const userData: User = {
+        email: `${trimmedUsername}@sidequest.app`, // Generate email from username
+        id: trimmedUsername, // Store username as id
         ...(name && name.trim() && { name: name.trim() })
       };
-      
-      // Store user data with email-based key
-      const userDataKey = getUserKey(trimmedEmail);
+
+      // Store user data with username-based key
+      const userDataKey = getUserKey(trimmedUsername);
       await SecureStore.setItemAsync(userDataKey, JSON.stringify(userData));
-      
-      // Store current logged-in user email
-      await SecureStore.setItemAsync(USER_KEY, trimmedEmail);
-      
-      // Store token with email-based key
-      const tokenKey = getTokenKey(trimmedEmail);
+
+      // Store current logged-in username
+      await SecureStore.setItemAsync(USER_KEY, trimmedUsername);
+
+      // Store token with username-based key
+      const tokenKey = getTokenKey(trimmedUsername);
       await SecureStore.setItemAsync(tokenKey, 'mock_token_' + Date.now());
-      
+
       setUser(userData);
-      console.log('Sign up successful for:', trimmedEmail);
+      console.log('Sign up successful for:', trimmedUsername);
       return true;
     } catch (error) {
       console.error('Sign up error:', error);
@@ -156,8 +169,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Only clear the current user reference, keep account data
       await SecureStore.deleteItemAsync(USER_KEY);
       // Clear token for current user
-      if (user?.email) {
-        const tokenKey = getTokenKey(user.email);
+      if (user?.id) {
+        const tokenKey = getTokenKey(user.id);
         await SecureStore.deleteItemAsync(tokenKey);
       }
       setUser(null);
@@ -168,20 +181,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getStoredData = async (): Promise<{ user: string | null; token: string | null }> => {
     try {
-      // Get current user email
-      const currentUserEmail = await SecureStore.getItemAsync(USER_KEY);
-      if (!currentUserEmail) {
+      // Get current username
+      const currentUsername = await SecureStore.getItemAsync(USER_KEY);
+      if (!currentUsername) {
         return { user: null, token: null };
       }
-      
+
       // Get user data for this account
-      const userDataKey = getUserKey(currentUserEmail);
+      const userDataKey = getUserKey(currentUsername);
       const userData = await SecureStore.getItemAsync(userDataKey);
-      
+
       // Get token for this account
-      const tokenKey = getTokenKey(currentUserEmail);
+      const tokenKey = getTokenKey(currentUsername);
       const token = await SecureStore.getItemAsync(tokenKey);
-      
+
       return {
         user: userData,
         token: token,
@@ -194,7 +207,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateProfile = async (updates: { name?: string; profilePicture?: string }): Promise<boolean> => {
     try {
-      if (!user || !user.email) return false;
+      if (!user || !user.id) return false;
 
       const updatedUser: User = {
         ...user,
@@ -207,8 +220,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updatedUser.profilePicture = undefined;
       }
 
-      // Store updated user data with email-based key (per account)
-      const userDataKey = getUserKey(user.email);
+      // Store updated user data with username-based key (per account)
+      const userDataKey = getUserKey(user.id);
       await SecureStore.setItemAsync(userDataKey, JSON.stringify(updatedUser));
 
       setUser(updatedUser);
