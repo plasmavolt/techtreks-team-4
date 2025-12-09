@@ -41,7 +41,13 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow SideQuest to use your location to show your position on the map."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

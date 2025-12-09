@@ -157,8 +157,8 @@ const app = () => {
         <Text style={styles.headerTitle}>Quests</Text>
         <Text style={styles.headerSubtitle}>
           {activeQuest
-            ? `Active: ${activeQuest.title}`
-            : 'Complete challenges to earn points'}
+            ? 'You have an active quest!'
+            : 'Complete challenges to earn points!'}
         </Text>
       </View>
 
@@ -178,6 +178,8 @@ const app = () => {
     </SafeAreaView>
   )
 }
+
+export default app
 
 const styles = StyleSheet.create({
   container: {
@@ -203,7 +205,7 @@ const styles = StyleSheet.create({
 
   headerSubtitle: {
     fontSize: FontSize.md,
-    color: 'beige',
+    color: Colors.textSecondary,
     fontFamily: Fonts.sans,
     marginTop: Spacing.xs,
   },

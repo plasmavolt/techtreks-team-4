@@ -1,9 +1,9 @@
-import { API_ENDPOINTS } from '@/constants/config'
 import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme'
 import { useQuests } from '@/contexts/QuestContext'
 import { useColorScheme } from '@/hooks/use-color-scheme'
+import * as Location from 'expo-location'
 import { useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -133,6 +133,11 @@ const mockLocations: Location[] = [
   }
 ]
 
+interface UserLocation {
+  latitude: number
+  longitude: number
+}
+
 const app = () => {
   const router = useRouter()
   const colorScheme = useColorScheme()
@@ -141,32 +146,79 @@ const app = () => {
   const [locations, setLocations] = useState<Location[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
+  const [locationPermissionGranted, setLocationPermissionGranted] = useState(false)
+  const mapRef = useRef<MapView>(null)
 
   useEffect(() => {
     fetchLocations()
+    requestLocationPermission()
   }, [])
+
+  const requestLocationPermission = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status === 'granted') {
+        setLocationPermissionGranted(true)
+        getCurrentLocation()
+      } else {
+        console.log('Location permission denied')
+      }
+    } catch (error) {
+      console.error('Error requesting location permission:', error)
+    }
+  }
+
+  const getCurrentLocation = async () => {
+    try {
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      })
+      const newUserLocation = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      }
+      setUserLocation(newUserLocation)
+      
+      // Center map on user location
+      if (mapRef.current) {
+        mapRef.current.animateToRegion({
+          latitude: newUserLocation.latitude,
+          longitude: newUserLocation.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        })
+      }
+    } catch (error) {
+      console.error('Error getting current location:', error)
+    }
+  }
 
   const fetchLocations = async () => {
     try {
       setLoading(true)
-      // Try to fetch from backend
-      console.log('Fetching from URL:', API_ENDPOINTS.LOCATIONS.GET_ALL)
-      const response = await fetch(API_ENDPOINTS.LOCATIONS.GET_ALL)
+      // // Try to fetch from backend
+      // console.log('Fetching from URL:', API_ENDPOINTS.LOCATIONS.GET_ALL)
+      // const response = await fetch(API_ENDPOINTS.LOCATIONS.GET_ALL)
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`)
+      // }
       
-      const data = await response.json()
-      console.log('API Response:', data)
+      // const data = await response.json()
+      // console.log('API Response:', data)
 
-      // Check if data.data exists, otherwise use mock data
-      if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
-        setLocations(data.data)
-      } else {
-        console.warn('No locations data found in API response, using mock data')
-        setLocations(mockLocations)
-      }
+      // // Check if data.data exists, otherwise use mock data
+      // if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
+      //   setLocations(data.data)
+      // } else {
+      //   console.warn('No locations data found in API response, using mock data')
+      //   setLocations(mockLocations)
+      // }
+      
+      // use mock locations.
+      setLocations(mockLocations)
+
     } catch (error) {
       console.error('Error fetching locations from backend:', error)
       console.log('Falling back to mock locations')
@@ -180,13 +232,16 @@ const app = () => {
   return (
     <View style={styles.container}>
       <MapView
+        ref={mapRef}
         style={styles.map}
         initialRegion={{
-          latitude: 40.7831,
-          longitude: -73.9712,
+          latitude: userLocation?.latitude || 40.731101,
+          longitude: userLocation?.longitude || -73.997334,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        showsUserLocation={locationPermissionGranted}
+        showsMyLocationButton={true}
         onPress={() => setSelectedLocation(null)}
       >
         {locations.map((location) => (

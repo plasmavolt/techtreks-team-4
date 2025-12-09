@@ -109,29 +109,6 @@ export default function TabTwoScreen() {
           <Text style={styles.sectionTitle}>Settings</Text>
 
           <View style={styles.settingsList}>
-            <TouchableOpacity
-              style={styles.settingItem}
-              onPress={() => Alert.alert('Notifications', 'Notification settings coming soon!')}
-            >
-              <MaterialIcons name="notifications" size={24} color={Colors.primary} />
-              <View style={styles.settingContent}>
-                <Text style={styles.settingTitle}>Notifications</Text>
-                <Text style={styles.settingSubtext}>Manage your notifications</Text>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={Colors.accent} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.settingItem}
-              onPress={() => Alert.alert('Privacy', 'Privacy settings coming soon!')}
-            >
-              <MaterialIcons name="lock" size={24} color={Colors.primary} />
-              <View style={styles.settingContent}>
-                <Text style={styles.settingTitle}>Privacy</Text>
-                <Text style={styles.settingSubtext}>Control your privacy</Text>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={Colors.accent} />
-            </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.settingItem}
