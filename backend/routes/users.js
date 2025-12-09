@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
 // Sign up - create a new user
@@ -32,11 +33,15 @@ router.post('/api/auth/signup', async (req, res) => {
       return res.status(400).json({ error: 'Username already taken' });
     }
 
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     // Create new user
     const user = new User({
       id: username,
       email: email,
-      password, // TODO: Hash password before storing in production
+      password: hashedPassword,
       name: name || undefined,
       points: 0,
       questsCompleted: 0
@@ -81,8 +86,9 @@ router.post('/api/auth/signin', async (req, res) => {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    // TODO: Compare hashed password in production
-    if (user.password !== password) {
+    // Compare hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
