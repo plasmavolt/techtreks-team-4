@@ -11,4 +11,7 @@ export const API_ENDPOINTS = {
     GET_USER: (id: string) => `${API_URL}/api/users/${id}`,
     UPDATE_USER: (id: string) => `${API_URL}/api/users/${id}`,
   },
+  LOCATIONS: {
+    GET_ALL: `${API_URL}/api/locations`,
+  },
 };
