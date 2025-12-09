@@ -1,7 +1,7 @@
 import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useRouter } from 'expo-router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
@@ -79,7 +79,7 @@ const app = () => {
   const fetchLocations = async () => {
     try {
       setLoading(true)
-      const response = await fetch('http://10.17.26.59:3000/api/locations')
+      const response = await fetch('http://216.165.95.190:3000/api/locations')
       const data = await response.json()
       console.log('API Response:', data)
 
