@@ -1,4 +1,3 @@
-import { API_ENDPOINTS } from '@/constants/config'
 import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme'
 import { useQuests } from '@/contexts/QuestContext'
 import { useColorScheme } from '@/hooks/use-color-scheme'
@@ -6,6 +5,7 @@ import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface Location {
   _id: string
@@ -71,6 +71,7 @@ const app = () => {
   const router = useRouter()
   const colorScheme = useColorScheme()
   const { activeQuest, abandonQuest } = useQuests()
+  const insets = useSafeAreaInsets()
   const [locations, setLocations] = useState<Location[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
@@ -82,19 +83,10 @@ const app = () => {
   const fetchLocations = async () => {
     try {
       setLoading(true)
-      const response = await fetch(API_ENDPOINTS.LOCATIONS.GET_ALL)
-      const data = await response.json()
-      console.log('API Response:', data)
-
-      // Check if data.data exists, otherwise use empty array
-      if (data && data.data && Array.isArray(data.data)) {
-        setLocations(data.data)
-      } else {
-        console.warn('No locations data found')
-        setLocations([])
-      }
+      // Use mock locations instead of fetching from backend
+      setLocations(mockLocations)
     } catch (error) {
-      console.error('Error fetching locations:', error)
+      console.error('Error loading locations:', error)
       setLocations([])
     } finally {
       setLoading(false)
@@ -129,51 +121,8 @@ const app = () => {
         ))}
       </MapView>
 
-      {loading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color={Colors.primary} />
-        </View>
-      )}
-
-      {selectedLocation && (
-        <View style={[styles.locationCard, { bottom: activeQuest ? 100 : 20 }]}>
-          <View style={styles.cardHeader}>
-            <View>
-              <Text style={styles.cardTitle}>{selectedLocation.name}</Text>
-              <Text style={styles.cardSubtitle}>
-                {selectedLocation.address.city}, {selectedLocation.address.state}
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => setSelectedLocation(null)}
-              style={styles.closeButton}
-            >
-              <Text style={styles.closeButtonText}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.cardBody}>
-            <Text style={styles.cardLabel}>Type:</Text>
-            <Text style={styles.cardValue}>{selectedLocation.type}</Text>
-
-            {selectedLocation.categories.length > 0 && (
-              <>
-                <Text style={styles.cardLabel}>Categories:</Text>
-                <View style={styles.categoryContainer}>
-                  {selectedLocation.categories.map((category, index) => (
-                    <View key={index} style={styles.categoryTag}>
-                      <Text style={styles.categoryText}>{category}</Text>
-                    </View>
-                  ))}
-                </View>
-              </>
-            )}
-          </View>
-        </View>
-      )}
-
       {activeQuest && (
-        <View style={styles.questProgressCard}>
+        <View style={[styles.questProgressCard, { top: insets.top + 20 }]}>
           <View style={styles.questCardHeader}>
             <View style={styles.questCardTitleContainer}>
               <Text style={styles.questCardTitle} numberOfLines={1}>
@@ -217,6 +166,49 @@ const app = () => {
           </View>
         </View>
       )}
+
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      )}
+
+      {selectedLocation && (
+        <View style={styles.locationCard}>
+          <View style={styles.cardHeader}>
+            <View>
+              <Text style={styles.cardTitle}>{selectedLocation.name}</Text>
+              <Text style={styles.cardSubtitle}>
+                {selectedLocation.address.city}, {selectedLocation.address.state}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setSelectedLocation(null)}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.cardBody}>
+            <Text style={styles.cardLabel}>Type:</Text>
+            <Text style={styles.cardValue}>{selectedLocation.type}</Text>
+
+            {selectedLocation.categories.length > 0 && (
+              <>
+                <Text style={styles.cardLabel}>Categories:</Text>
+                <View style={styles.categoryContainer}>
+                  {selectedLocation.categories.map((category, index) => (
+                    <View key={index} style={styles.categoryTag}>
+                      <Text style={styles.categoryText}>{category}</Text>
+                    </View>
+                  ))}
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+      )}
     </View>
   )
 }
@@ -246,6 +238,7 @@ const styles = StyleSheet.create({
 
   locationCard: {
     position: 'absolute',
+    bottom: 20,
     left: 20,
     right: 20,
     backgroundColor: Colors.background,
@@ -267,15 +260,15 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: FontSize.xl,
     fontWeight: 'bold',
-    color: Colors.primary,
-    fontFamily: Fonts.rounded,
+    color: Colors.textPrimary,
+    fontFamily: Fonts.serif,
   },
 
   cardSubtitle: {
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
     marginTop: Spacing.xs,
-    fontFamily: Fonts.serif,
+    fontFamily: Fonts.sans,
   },
 
   closeButton: {
@@ -303,7 +296,7 @@ const styles = StyleSheet.create({
     color: Colors.textLight,
     textTransform: 'uppercase',
     marginTop: Spacing.sm,
-    fontFamily: Fonts.serif,
+    fontFamily: Fonts.mono,
   },
 
   cardValue: {
@@ -330,7 +323,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.accent,
     fontWeight: '600',
-    fontFamily: Fonts.serif,
+    fontFamily: Fonts.mono,
   },
 
   overlay: {
@@ -395,7 +388,6 @@ const styles = StyleSheet.create({
 
   questProgressCard: {
     position: 'absolute',
-    bottom: 20,
     left: 20,
     right: 20,
     backgroundColor: Colors.background,
