@@ -7,6 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 
+const defaultProfileImage = require('@/assets/images/IMG_5444.jpg');
+
 export default function TabTwoScreen() {
   const router = useRouter();
   const { user, signOut } = useAuth();
@@ -56,6 +58,11 @@ export default function TabTwoScreen() {
               )}
             </View>
 
+            {/* Logo above username */}
+            <View style={styles.logoContainer}>
+              <Image source={defaultProfileImage} style={styles.logoImage} />
+            </View>
+
             {/* User Info */}
             <View style={styles.userInfo}>
               {user.name ? (
@@ -65,7 +72,7 @@ export default function TabTwoScreen() {
                   <Text style={[styles.userName, styles.addNameText]}>Add Name</Text>
                 </TouchableOpacity>
               )}
-              <Text style={styles.userId}>@{user.id}</Text>
+              <Text style={styles.userId}>@SideQuest</Text>
             </View>
 
             {/* Profile Actions */}
@@ -84,21 +91,21 @@ export default function TabTwoScreen() {
           {/* Quests Completed */}
           <View style={styles.userStatCard}>
             <Text style={styles.userStatValue}>
-              {user?.questsCompleted ?? 0}
+              {user?.questsCompleted ?? 18}
             </Text>
             <Text style={styles.userStatLabel}>Quests</Text>
           </View>
           {/* User Points */}
           <View style={styles.userStatCard}>
             <Text style={styles.userStatValue}>
-              {user?.points ?? 0}
+              {user?.points ?? 647}
             </Text>
             <Text style={styles.userStatLabel}>Points</Text>
           </View>
           {/* Rank */}
           <View style={styles.userStatCard}>
             <Text style={styles.userStatValue}>
-              {user?.rank ?? '-'}
+              {user?.rank ?? '3rd'}
             </Text>
             <Text style={styles.userStatLabel}>Rank</Text>
           </View>
@@ -229,6 +236,20 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+  },
+
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+    marginTop: -110,
+  },
+
+  logoImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: Colors.border,
   },
 
   userInfo: {
