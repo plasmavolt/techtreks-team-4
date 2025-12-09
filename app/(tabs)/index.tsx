@@ -1,4 +1,4 @@
-import { Fonts } from '@/constants/theme'
+import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -128,7 +128,7 @@ const app = () => {
 
       {loading && (
         <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#2596be" />
+          <ActivityIndicator size="large" color={Colors.primary} />
         </View>
       )}
 
@@ -175,175 +175,172 @@ const app = () => {
 export default app
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
 
-container: {
-  flex: 1,
-},
+  map: {
+    flex: 1,
+  },
 
-map: {
-  flex: 1,
-},
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.overlay,
+  },
 
-loadingOverlay: {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-},
+  locationCard: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: Colors.background,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    padding: Spacing.lg,
+    ...Shadows.medium,
+  },
 
-locationCard: {
-  position: 'absolute',
-  bottom: 20,
-  left: 20,
-  right: 20,
-  backgroundColor: 'white',
-  borderRadius: 16,
-  padding: 20,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.25,
-  shadowRadius: 8,
-  elevation: 5,
-},
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: Spacing.md,
+  },
 
-cardHeader: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'flex-start',
-  marginBottom: 16,
-},
+  cardTitle: {
+    fontSize: FontSize.xl,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    fontFamily: Fonts.rounded,
+  },
 
-cardTitle: {
-  fontSize: 20,
-  fontWeight: 'bold',
-  color: '#2596be',
-  fontFamily: Fonts.rounded,
-},
+  cardSubtitle: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    marginTop: Spacing.xs,
+    fontFamily: Fonts.serif,
+  },
 
-cardSubtitle: {
-  fontSize: 14,
-  color: '#666',
-  marginTop: 4,
-  fontFamily: Fonts.serif,
-},
+  closeButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: Colors.secondary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-closeButton: {
-  width: 30,
-  height: 30,
-  borderRadius: 15,
-  backgroundColor: '#f0f0f0',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
+  closeButtonText: {
+    fontSize: 18,
+    color: Colors.accent,
+    fontWeight: 'bold',
+  },
 
-closeButtonText: {
-  fontSize: 18,
-  color: '#666',
-  fontWeight: 'bold',
-},
+  cardBody: {
+    gap: Spacing.sm,
+  },
 
-cardBody: {
-  gap: 8,
-},
+  cardLabel: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    color: Colors.textLight,
+    textTransform: 'uppercase',
+    marginTop: Spacing.sm,
+    fontFamily: Fonts.serif,
+  },
 
-cardLabel: {
-  fontSize: 12,
-  fontWeight: '600',
-  color: '#888',
-  textTransform: 'uppercase',
-  marginTop: 8,
-  fontFamily: Fonts.serif,
-},
+  cardValue: {
+    fontSize: FontSize.md,
+    color: Colors.textPrimary,
+    fontFamily: Fonts.serif,
+  },
 
-cardValue: {
-  fontSize: 16,
-  color: '#333',
-  fontFamily: Fonts.serif,
-},
+  categoryContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+  },
 
-categoryContainer: {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  gap: 8,
-  marginTop: 4,
-},
+  categoryTag: {
+    backgroundColor: Colors.secondary,
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
 
-categoryTag: {
-  backgroundColor: '#e8f4f8',
-  borderRadius: 12,
-  paddingHorizontal: 12,
-  paddingVertical: 6,
-},
+  categoryText: {
+    fontSize: FontSize.xs,
+    color: Colors.accent,
+    fontWeight: '600',
+    fontFamily: Fonts.serif,
+  },
 
-categoryText: {
-  fontSize: 12,
-  color: '#2596be',
-  fontWeight: '600',
-  fontFamily: Fonts.serif,
-},
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.lg,
+    pointerEvents: 'none',
+  },
 
-overlay: {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: 20,
-  pointerEvents: 'none',
-},
+  text: {
+    color: Colors.primary,
+    fontSize: FontSize.huge,
+    fontWeight: 'bold',
+    position: 'relative',
+    textAlign: 'center',
+    fontFamily: Fonts.rounded,
+  },
 
-text: {
-  color: '#2596be',
-  fontSize: 70,
-  fontWeight: 'bold',
-  position: 'relative',
-  textAlign: 'center',
-  fontFamily: Fonts.rounded,
-},
+  text1: {
+    color: Colors.primary,
+    fontSize: FontSize.xxl,
+    textAlign: 'center',
+    marginBottom: Spacing.xxl,
+    fontFamily: Fonts.rounded,
+  },
 
-text1: {
-  color: '#2596be',
-  fontSize: 25,
-  textAlign: 'center',
-  marginBottom: 40,
-  fontFamily: Fonts.rounded,
-},
+  navigationContainer: {
+    marginTop: Spacing.xxl,
+    alignItems: 'center',
+    width: '100%',
+  },
 
-navigationContainer: {
-  marginTop: 40,
-  alignItems: 'center',
-  width: '100%',
-},
+  navigationHint: {
+    color: Colors.textPrimary,
+    fontSize: FontSize.md,
+    fontFamily: Fonts.serif,
+    textAlign: 'center',
+    marginBottom: Spacing.lg,
+    paddingHorizontal: Spacing.lg,
+  },
 
-navigationHint: {
-  color: 'black',
-  fontSize: 16,
-  fontFamily: Fonts.serif,
-  textAlign: 'center',
-  marginBottom: 20,
-  paddingHorizontal: 20,
-},
+  navButton: {
+    backgroundColor: Colors.secondary,
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.sm,
+    minWidth: 200,
+  },
 
-navButton: {
-  backgroundColor: '#0a7ea4',
-  paddingVertical: 12,
-  paddingHorizontal: 24,
-  borderRadius: 8,
-  minWidth: 200,
-},
-
-navButtonText: {
-  color: 'black',
-  fontSize: 16,
-  fontWeight: '600',
-  textAlign: 'center',
-  fontFamily: Fonts.serif,
-},
-
+  navButtonText: {
+    color: Colors.accent,
+    fontSize: FontSize.md,
+    fontWeight: '600',
+    textAlign: 'center',
+    fontFamily: Fonts.serif,
+  },
 })

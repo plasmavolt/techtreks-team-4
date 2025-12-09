@@ -10,65 +10,70 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   // Brand colors
-  primary: '#2596be',
-  primaryLight: '#e8f4f8',
+  text: '#f0ecea',
+  background: '#120f0d',
+  primary: '#c0b1aa',
+  secondary: '#5c5942',
+  accent: '#a2a181',
 
-  // Text colors
-  textPrimary: '#11181C',
-  textSecondary: '#666',
-  textLight: '#888',
+  // Derived colors for convenience
+  primaryLight: '#d4c9c3',
+  textPrimary: '#f0ecea',
+  textSecondary: '#c0b1aa',
+  textLight: '#a2a181',
   textWhite: '#fff',
 
-  // Background colors
-  background: '#fff',
-  backgroundDark: '#151718',
-  overlay: 'rgba(255, 255, 255, 0.8)',
+  // Background variations
+  backgroundDark: '#0a0807',
+  overlay: 'rgba(18, 15, 13, 0.8)',
 
   // UI colors
-  border: '#e0e0e0',
+  border: '#5c5942',
   shadow: '#000',
-  disabled: '#f0f0f0',
+  disabled: '#2a2621',
 
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#f0ecea',
+    background: '#120f0d',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    icon: '#a2a181',
+    tabIconDefault: '#a2a181',
+    tabIconSelected: '#c0b1aa',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#f0ecea',
+    background: '#120f0d',
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    icon: '#a2a181',
+    tabIconDefault: '#a2a181',
+    tabIconSelected: '#c0b1aa',
   },
 };
 
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
+    sans: 'Inter_400Regular',
     /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
+    serif: 'PlayfairDisplay_400Regular',
     /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
+    rounded: 'Inter_400Regular',
     /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
+    mono: 'JetBrainsMono_400Regular',
+    display: 'PlayfairDisplay_700Bold'
   },
   default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
+    sans: 'Inter_400Regular',
+    serif: 'PlayfairDisplay_400Regular',
+    rounded: 'Inter_400Regular',
+    mono: 'JetBrainsMono_400Regular',
+    display: 'PlayfairDisplay_700Bold'
   },
   web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    sans: 'Inter_400Regular',
+    serif: 'PlayfairDisplay_400Regular',
+    rounded: 'Inter_400Regular',
+    mono: 'JetBrainsMono_400Regular',
   },
 });
 
