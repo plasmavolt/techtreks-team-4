@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    width: 36,
+    width: 40,
     height: 36,
     borderRadius: 18,
     backgroundColor: Colors.border,
@@ -282,6 +282,7 @@ const styles = StyleSheet.create({
     color: '#2596be',
     fontSize: 14,
     fontFamily: Fonts.sans,
+    marginBottom:6,
   },
   formSection: {
     marginBottom: 24,
@@ -290,6 +291,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontSize: 14,
     fontFamily: Fonts.sans,
+    marginLeft: 6
   },
   input: {
     borderWidth: 1,
@@ -303,19 +305,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.1)',
     borderRadius: 8,
-    padding: 16,
+    padding: 15,
     backgroundColor: 'rgba(0,0,0,0.05)',
   },
   emailText: {
     fontSize: 16,
     fontFamily: Fonts.mono,
     opacity: 0.7,
+   
   },
   hint: {
     fontSize: 12,
     opacity: 0.6,
     marginTop: 4,
     fontFamily: Fonts.sans,
+    marginLeft: 6
   },
   saveButton: {
     paddingVertical: 16,

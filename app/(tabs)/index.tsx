@@ -26,25 +26,25 @@ interface Location {
 const mockLocations: Location[] = [
   {
     _id: 'mock_1',
-    name: 'Central Park',
-    type: 'place',
-    coordinates: { latitude: 40.7829, longitude: -73.9654 },
+    name: 'Ferrane Bakery',
+    type: 'Bakery',
+    coordinates: { latitude: 40.69790, longitude: -73.99369249655994 },
     address: { city: 'New York', state: 'NY' },
-    categories: ['park']
+    categories: ['Food & Drink']
   },
   {
     _id: 'mock_2',
-    name: 'Times Square',
-    type: 'place',
-    coordinates: { latitude: 40.7580, longitude: -73.9855 },
+    name: 'Martha\'s Country Bakery',
+    type: 'Bakery',
+    coordinates: { latitude: 40.71511216956412, longitude: -73.96058761524243 },
     address: { city: 'New York', state: 'NY' },
-    categories: ['landmark']
+    categories: ['Food & Drink']
   },
   {
     _id: 'mock_3',
-    name: 'Brooklyn Bridge',
-    type: 'place',
-    coordinates: { latitude: 40.7061, longitude: -73.9969 },
+    name: 'The Bearded Baker',
+    type: 'Bakery',
+    coordinates: { latitude: 40.683065518833146, longitude: -73.9969 },
     address: { city: 'Brooklyn', state: 'NY' },
     categories: ['landmark']
   },

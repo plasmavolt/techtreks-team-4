@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: FontSize.xxxl,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: '#c92a2a',
     fontFamily: Fonts.display,
   },
 

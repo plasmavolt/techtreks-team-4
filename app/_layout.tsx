@@ -1,8 +1,8 @@
 import {
-  Inter_400Regular,
-  JetBrainsMono_400Regular,
-  PlayfairDisplay_400Regular,
-  PlayfairDisplay_700Bold,
+    Inter_400Regular,
+    JetBrainsMono_400Regular,
+    PlayfairDisplay_400Regular,
+    PlayfairDisplay_700Bold,
 } from '@expo-google-fonts/dev';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
