@@ -1,5 +1,6 @@
-import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme'
 import { API_ENDPOINTS } from '@/constants/config'
+import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme'
+import { useQuests } from '@/contexts/QuestContext'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -69,6 +70,7 @@ const mockLocations: Location[] = [
 const app = () => {
   const router = useRouter()
   const colorScheme = useColorScheme()
+  const { activeQuest, abandonQuest } = useQuests()
   const [locations, setLocations] = useState<Location[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
@@ -134,7 +136,7 @@ const app = () => {
       )}
 
       {selectedLocation && (
-        <View style={styles.locationCard}>
+        <View style={[styles.locationCard, { bottom: activeQuest ? 100 : 20 }]}>
           <View style={styles.cardHeader}>
             <View>
               <Text style={styles.cardTitle}>{selectedLocation.name}</Text>
@@ -169,6 +171,52 @@ const app = () => {
           </View>
         </View>
       )}
+
+      {activeQuest && (
+        <View style={styles.questProgressCard}>
+          <View style={styles.questCardHeader}>
+            <View style={styles.questCardTitleContainer}>
+              <Text style={styles.questCardTitle} numberOfLines={1}>
+                {activeQuest.title}
+              </Text>
+              <Text style={styles.questCardSubtitle} numberOfLines={1}>
+                {activeQuest.description}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push('/(tabs)/quests')}
+              style={styles.questViewButton}
+            >
+              <Text style={styles.questViewButtonText}>View</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => abandonQuest()}
+              style={styles.abandonQuestButton}
+            >
+              <Text style={styles.abandonQuestButtonText}>Abandon</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.questProgressContainer}>
+            <View style={styles.questProgressBar}>
+              <View
+                style={[
+                  styles.questProgressFill,
+                  { width: `${activeQuest.progress || 0}%` },
+                ]}
+              />
+            </View>
+            <View style={styles.questProgressInfo}>
+              <Text style={styles.questProgressText}>
+                {Math.round(activeQuest.progress || 0)}%
+              </Text>
+              <Text style={styles.questLocationCount}>
+                {activeQuest.locationIds.length} location{activeQuest.locationIds.length > 1 ? 's' : ''}
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   )
 }
@@ -198,7 +246,6 @@ const styles = StyleSheet.create({
 
   locationCard: {
     position: 'absolute',
-    bottom: 20,
     left: 20,
     right: 20,
     backgroundColor: Colors.background,
@@ -207,6 +254,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     padding: Spacing.lg,
     ...Shadows.medium,
+    zIndex: 10,
   },
 
   cardHeader: {
@@ -343,5 +391,111 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     fontFamily: Fonts.serif,
+  },
+
+  questProgressCard: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: Colors.background,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 2,
+    borderColor: Colors.primary,
+    padding: Spacing.md,
+    ...Shadows.medium,
+    zIndex: 5,
+  },
+
+  questCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: Spacing.sm,
+  },
+
+  questCardTitleContainer: {
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
+
+  questCardTitle: {
+    fontSize: FontSize.md,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    fontFamily: Fonts.serif,
+    marginBottom: Spacing.xs,
+  },
+
+  questCardSubtitle: {
+    fontSize: FontSize.xs,
+    color: Colors.textSecondary,
+    fontFamily: Fonts.sans,
+  },
+
+  questViewButton: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.sm,
+    marginRight: Spacing.xs
+  },
+
+  questViewButtonText: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    color: Colors.background,
+    fontFamily: Fonts.sans,
+  },
+
+  abandonQuestButton: {
+    backgroundColor: '#F44336',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.sm,
+  },
+
+  abandonQuestButtonText: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    color: Colors.background,
+    fontFamily: Fonts.sans,
+  },
+
+  questProgressContainer: {
+    marginTop: Spacing.sm,
+  },
+
+  questProgressBar: {
+    height: 6,
+    backgroundColor: Colors.border,
+    borderRadius: BorderRadius.sm,
+    overflow: 'hidden',
+    marginBottom: Spacing.xs,
+  },
+
+  questProgressFill: {
+    height: '100%',
+    backgroundColor: Colors.primary,
+    borderRadius: BorderRadius.sm,
+  },
+
+  questProgressInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  questProgressText: {
+    fontSize: FontSize.xs,
+    color: Colors.textPrimary,
+    fontWeight: '600',
+    fontFamily: Fonts.mono,
+  },
+
+  questLocationCount: {
+    fontSize: FontSize.xs,
+    color: Colors.textSecondary,
+    fontFamily: Fonts.mono,
   },
 })

@@ -57,13 +57,13 @@ const app = () => {
           onPress: async () => {
             const success = await startQuest(quest.id)
             if (success) {
-    router.push({
-      pathname: '/',
-      params: {
-        highlightedLocations: JSON.stringify(quest.locationIds),
-        questId: quest.id
-      }
-    })
+              router.push({
+                pathname: '/',
+                params: {
+                  highlightedLocations: JSON.stringify(quest.locationIds),
+                  questId: quest.id
+                }
+              })
             } else {
               Alert.alert('Error', 'Failed to start quest. Please try again.')
             }
@@ -78,27 +78,27 @@ const app = () => {
     const isCompleted = item.completed
 
     return (
-    <TouchableOpacity
+      <TouchableOpacity
         style={[
           styles.questCard,
           isActive && styles.activeQuestCard,
           isCompleted && styles.completedQuestCard
         ]}
-      onPress={() => handleQuestPress(item)}
-      activeOpacity={0.7}
+        onPress={() => handleQuestPress(item)}
+        activeOpacity={0.7}
         disabled={isCompleted}
-    >
-      <View style={styles.cardHeader}>
-        <View style={styles.categoryBadge}>
-          <Text style={styles.categoryText}>{item.category}</Text>
+      >
+        <View style={styles.cardHeader}>
+          <View style={styles.categoryBadge}>
+            <Text style={styles.categoryText}>{item.category}</Text>
+          </View>
+          <View style={[styles.difficultyBadge, { backgroundColor: getDifficultyColor(item.difficulty) }]}>
+            <Text style={styles.difficultyText}>{item.difficulty.toUpperCase()}</Text>
+          </View>
         </View>
-        <View style={[styles.difficultyBadge, { backgroundColor: getDifficultyColor(item.difficulty) }]}>
-          <Text style={styles.difficultyText}>{item.difficulty.toUpperCase()}</Text>
-        </View>
-      </View>
 
-      <Text style={styles.questTitle}>{item.title}</Text>
-      <Text style={styles.questDescription}>{item.description}</Text>
+        <Text style={styles.questTitle}>{item.title}</Text>
+        <Text style={styles.questDescription}>{item.description}</Text>
 
         {/* Show progress if quest is active */}
         {isActive && item.progress !== undefined && (
@@ -110,11 +110,11 @@ const app = () => {
           </View>
         )}
 
-      <View style={styles.cardFooter}>
-        <View style={styles.locationInfo}>
-          <Text style={styles.locationCount}>📍 {item.locationIds.length} location{item.locationIds.length > 1 ? 's' : ''}</Text>
-        </View>
-        <View style={styles.pointsBadge}>
+        <View style={styles.cardFooter}>
+          <View style={styles.locationInfo}>
+            <Text style={styles.locationCount}>📍 {item.locationIds.length} location{item.locationIds.length > 1 ? 's' : ''}</Text>
+          </View>
+          <View style={styles.pointsBadge}>
             <Text style={styles.pointsText}>
               {isCompleted ? '✓ ' : ''}+{item.points} pts
             </Text>
@@ -130,10 +130,10 @@ const app = () => {
         {isCompleted && (
           <View style={styles.completedOverlay}>
             <Text style={styles.completedText}>✓ COMPLETED</Text>
-      </View>
+          </View>
         )}
-    </TouchableOpacity>
-  )
+      </TouchableOpacity>
+    )
   }
 
   if (isLoading) {

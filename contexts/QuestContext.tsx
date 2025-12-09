@@ -1,4 +1,5 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 import { useAuth } from './AuthContext';
 
 export interface Quest {
@@ -188,7 +189,20 @@ export function QuestProvider({ children }: { children: ReactNode }) {
   };
 
   const abandonQuest = () => {
-    setActiveQuest(null);
+    Alert.alert(
+      'Abandon Quest',
+      `Do you want to abandon "${activeQuest?.title}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Abandon',
+          style: 'destructive',
+          onPress: async () => {
+            setActiveQuest(null);
+          }
+        }
+      ]
+    )
     // TODO: Clear from AsyncStorage
     // await AsyncStorage.removeItem('activeQuest');
   };
