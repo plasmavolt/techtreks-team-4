@@ -106,7 +106,7 @@ export default function SignInScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>SideQuest</Text>
+        <Text style={styles.title}>Sidequest</Text>
         <Text style={styles.subtitle}>
           {isSignUp ? 'Create your account' : 'Welcome back!'}
         </Text>
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     textAlign: 'center',
     marginBottom: 10,
-    fontFamily: Fonts.sans,
+    fontFamily: Fonts.display,
   },
   subtitle: {
     fontSize: 18,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.textPrimary,
     marginBottom: Spacing.md,
-    fontFamily: Fonts.sans,
+    fontFamily: Fonts.mono,
     borderWidth: 1,
     borderColor: Colors.border,
   },

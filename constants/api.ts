@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 
 // API Configuration
 // For iOS Simulator: use localhost
@@ -13,18 +12,18 @@ const getApiBaseUrl = () => {
     return process.env.EXPO_PUBLIC_API_URL;
   }
 
-  // Default based on platform
-  if (Platform.OS === 'android') {
-    // Android emulator uses 10.0.2.2 to access host machine's localhost
-    // For physical Android device, change this to your computer's IP
-    return 'http://10.0.2.2:3000';
-  } else {
-    // iOS: Use local IP address (works for both simulator and physical device)
-    // For iOS Simulator, you can also use 'http://localhost:3000'
-    // For physical iOS device, use your computer's local IP (e.g., 10.16.76.160)
-    // Update this IP address if your computer's IP changes
-    return 'http://10.16.76.160:3000';
-  }
+//   // Default based on platform
+//   if (Platform.OS === 'android') {
+//     // Android emulator uses 10.0.2.2 to access host machine's localhost
+//     // For physical Android device, change this to your computer's IP
+//     return 'http://10.0.2.2:3000';
+//   } else {
+//     // iOS: Use local IP address (works for both simulator and physical device)
+//     // For iOS Simulator, you can also use 'http://localhost:3000'
+//     // For physical iOS device, use your computer's local IP (e.g., 10.16.76.160)
+//     // Update this IP address if your computer's IP changes
+//     return 'http://10.16.76.160:3000';
+//   }
 };
 
 export const API_BASE_URL = getApiBaseUrl();
