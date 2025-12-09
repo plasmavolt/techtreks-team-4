@@ -1,11 +1,12 @@
 import * as SecureStore from 'expo-secure-store';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { API_ENDPOINTS } from '@/constants/config';
 
 interface User {
   email: string;
   name?: string;
+  id: string; // username
   profilePicture?: string;
-  id: string; // username stored here
   questsCompleted?: number;
   points?: number;
   rank?: string;
@@ -66,42 +67,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (username: string, password: string): Promise<boolean> => {
     try {
-      // TODO: Replace with actual API call
-      // For now, this is a mock authentication
-      // In production, you'd call your backend API here
+      // Call backend API
+      const response = await fetch(API_ENDPOINTS.AUTH.SIGNIN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const data = await response.json();
 
-      // Mock validation (replace with real API)
-      if (username && password.length >= 6) {
-        // Check if user already exists (to preserve profile data)
-        const userDataKey = getUserKey(username);
-        const existingUserData = await SecureStore.getItemAsync(userDataKey);
-
-        let userData: User;
-        if (existingUserData) {
-          // User exists, preserve their profile data
-          userData = JSON.parse(existingUserData);
-        } else {
-          // New user, create fresh data with username as id
-          userData = {
-            email: `${username}@sidequest.app`, // Generate email from username
-            id: username
-          };
-        }
-
-        // Store user data with username-based key
-        await SecureStore.setItemAsync(userDataKey, JSON.stringify(userData));
-        // Store current logged-in username
-        await SecureStore.setItemAsync(USER_KEY, username);
-        // Store token with username-based key
-        const tokenKey = getTokenKey(username);
-        await SecureStore.setItemAsync(tokenKey, 'mock_token_' + Date.now());
-        setUser(userData);
-        return true;
+      if (!response.ok) {
+        console.error('Sign in error:', data.error);
+        return false;
       }
-      return false;
+
+      // Extract user data and token from response
+      const { user: userData, token } = data;
+
+      // Store user data with username-based key
+      const userDataKey = getUserKey(username);
+      await SecureStore.setItemAsync(userDataKey, JSON.stringify(userData));
+
+      // Store current logged-in username
+      await SecureStore.setItemAsync(USER_KEY, username);
+
+      // Store token with username-based key
+      const tokenKey = getTokenKey(username);
+      await SecureStore.setItemAsync(tokenKey, token);
+
+      setUser(userData);
+      return true;
     } catch (error) {
       console.error('Sign in error:', error);
       return false;
@@ -133,16 +130,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
-      // TODO: Replace with actual API call
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
       const trimmedUsername = username.trim();
-      const userData: User = {
-        email: `${trimmedUsername}@sidequest.app`, // Generate email from username
-        id: trimmedUsername, // Store username as id
-        ...(name && name.trim() && { name: name.trim() })
-      };
+
+      // Call backend API
+      const response = await fetch(API_ENDPOINTS.AUTH.SIGNUP, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: trimmedUsername,
+          password,
+          name: name && name.trim() ? name.trim() : undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('Sign up error:', data.error);
+        return false;
+      }
+
+      // Extract user data and token from response
+      const { user: userData, token } = data;
 
       // Store user data with username-based key
       const userDataKey = getUserKey(trimmedUsername);
@@ -153,7 +164,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Store token with username-based key
       const tokenKey = getTokenKey(trimmedUsername);
-      await SecureStore.setItemAsync(tokenKey, 'mock_token_' + Date.now());
+      await SecureStore.setItemAsync(tokenKey, token);
 
       setUser(userData);
       console.log('Sign up successful for:', trimmedUsername);
@@ -209,16 +220,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       if (!user || !user.id) return false;
 
-      const updatedUser: User = {
-        ...user,
-        ...(updates.name !== undefined && { name: updates.name }),
-        ...(updates.profilePicture !== undefined && { profilePicture: updates.profilePicture }),
-      };
+      // Call backend API
+      const response = await fetch(API_ENDPOINTS.USERS.UPDATE_USER(user.id), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
 
-      // If profilePicture is explicitly set to null, remove it
-      if (updates.profilePicture === null) {
-        updatedUser.profilePicture = undefined;
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('Update profile error:', data.error);
+        return false;
       }
+
+      // Extract updated user data
+      const updatedUser = data.user;
 
       // Store updated user data with username-based key (per account)
       const userDataKey = getUserKey(user.id);

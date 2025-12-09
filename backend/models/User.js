@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
+  id: { type: String, required: true, unique: true }, // username
   email: { type: String, required: true, unique: true },
+  name: { type: String },
+  password: { type: String, required: true },
+  profilePicture: { type: String },
   points: { type: Number, default: 0 },
-  friends: [{ type: String }], 
+  questsCompleted: { type: Number, default: 0 },
+  rank: { type: String },
+  friends: [{ type: String }],
   completedChallenges: [{
     challengeId: String,
     locationId: String,

@@ -10,6 +10,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View
@@ -17,8 +18,7 @@ import {
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Fonts } from '@/constants/theme';
+import { Colors, Fonts, FontSize, Spacing } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -148,13 +148,11 @@ export default function EditProfileScreen() {
             {profilePicture ? (
               <Image source={{ uri: profilePicture }} style={styles.avatar} />
             ) : (
-              <ThemedView style={styles.avatarPlaceholder}>
-                <IconSymbol
-                  size={60}
-                  name="person.crop.circle.fill"
-                  color={tintColor}
-                />
-              </ThemedView>
+              <View style={styles.avatarPlaceholder}>
+                <Text style={styles.avatarPlaceholderText}>
+                  {user?.name?.split(' ').map(n => n[0]).join('')}
+                </Text>
+              </View>
             )}
             <ThemedView style={styles.editIconContainer}>
               <MaterialIcons name="camera-alt" size={20} color="#fff" />
@@ -220,14 +218,14 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.1)',
+    borderBottomColor: Colors.border,
   },
   backButton: {
     padding: 8,
   },
   headerTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.sans,
+    fontSize: FontSize.xl,
+    fontFamily: Fonts.display,
   },
   placeholder: {
     width: 40,
@@ -253,9 +251,19 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: 'rgba(37, 150, 190, 0.1)',
+    backgroundColor: Colors.secondary,
+    borderWidth: 1,
+    borderColor: Colors.border,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: Spacing.md,
+  },
+
+  avatarPlaceholderText: {
+    fontSize: FontSize.xxl,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    fontFamily: Fonts.rounded,
   },
   editIconContainer: {
     position: 'absolute',
@@ -264,7 +272,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#2596be',
+    backgroundColor: Colors.border,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
@@ -300,7 +308,7 @@ const styles = StyleSheet.create({
   },
   emailText: {
     fontSize: 16,
-    fontFamily: Fonts.sans,
+    fontFamily: Fonts.mono,
     opacity: 0.7,
   },
   hint: {
@@ -320,10 +328,9 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   saveButtonText: {
-    color: '#fff',
+    color: Colors.accent,
     fontSize: 16,
     fontWeight: '600',
     fontFamily: Fonts.sans,
   },
 });
-
