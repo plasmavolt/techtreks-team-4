@@ -1,6 +1,6 @@
+import { API_ENDPOINTS } from '@/constants/config';
 import * as SecureStore from 'expo-secure-store';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { API_ENDPOINTS } from '@/constants/config';
 
 interface User {
   email: string;
@@ -16,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   signIn: (username: string, password: string) => Promise<boolean>;
-  signUp: (username: string, password: string, name?: string) => Promise<boolean>;
+  signUp: (username: string, password: string, email: string, name?: string) => Promise<boolean>;
   signOut: () => Promise<void>;
   getStoredData: () => Promise<{ user: string | null; token: string | null }>;
   updateProfile: (updates: { name?: string; profilePicture?: string }) => Promise<boolean>;
@@ -105,11 +105,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signUp = async (username: string, password: string, name?: string): Promise<boolean> => {
+  const signUp = async (
+    username: string,
+    password: string,
+    email: string,
+    name?: string
+  ): Promise<boolean> => {
     try {
       // Basic validation
       if (!username || !username.trim()) {
         console.error('Sign up error: Username is required');
+        return false;
+      }
+
+      if (!email || !email.trim()) {
+        console.error('Sign up error: Email is required');
         return false;
       }
 
@@ -130,7 +140,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        console.error('Sign up error: Invalid email format');
+        return false;
+      }
+
       const trimmedUsername = username.trim();
+      const trimmedEmail = email.trim().toLowerCase();
 
       // Call backend API
       const response = await fetch(API_ENDPOINTS.AUTH.SIGNUP, {
@@ -141,6 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({
           username: trimmedUsername,
           password,
+          email: trimmedEmail,
           name: name && name.trim() ? name.trim() : undefined,
         }),
       });

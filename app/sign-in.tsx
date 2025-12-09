@@ -1,4 +1,4 @@
-import { Fonts } from '@/constants/theme';
+import { BorderRadius, Colors, Fonts, Spacing } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -19,6 +19,7 @@ export default function SignInScreen() {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const { signIn, signUp } = useAuth();
@@ -28,6 +29,11 @@ export default function SignInScreen() {
     // Validation
     if (!username || !username.trim()) {
       Alert.alert('Error', 'Please enter your username');
+      return;
+    }
+
+    if (isSignUp && (!email || !email.trim())) {
+      Alert.alert('Error', 'Please enter your email');
       return;
     }
 
@@ -53,12 +59,25 @@ export default function SignInScreen() {
       return;
     }
 
+    if (isSignUp) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        Alert.alert('Error', 'Please enter a valid email address');
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     try {
       let success = false;
       if (isSignUp) {
-        success = await signUp(username.trim(), password, name.trim() || undefined);
+        success = await signUp(
+          username.trim(),
+          password,
+          email.trim().toLowerCase(),
+          name.trim() || undefined
+        );
       } else {
         success = await signIn(username.trim(), password);
       }
@@ -97,17 +116,30 @@ export default function SignInScreen() {
             <TextInput
               style={styles.input}
               placeholder="Name (optional)"
-              placeholderTextColor="#999"
+              placeholderTextColor={Colors.textLight}
               value={name}
               onChangeText={setName}
               autoCapitalize="words"
             />
           )}
 
+          {isSignUp && (
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor={Colors.textLight}
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+            />
+          )}
+
           <TextInput
             style={styles.input}
             placeholder="Username"
-            placeholderTextColor="#999"
+            placeholderTextColor={Colors.textLight}
             value={username}
             onChangeText={setUsername}
             autoCapitalize="none"
@@ -117,7 +149,7 @@ export default function SignInScreen() {
           <TextInput
             style={styles.input}
             placeholder="Password"
-            placeholderTextColor="#999"
+            placeholderTextColor={Colors.textLight}
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -131,7 +163,7 @@ export default function SignInScreen() {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={Colors.backgroundDark} />
             ) : (
               <Text style={styles.buttonText}>
                 {isSignUp ? 'Sign Up' : 'Sign In'}
@@ -158,64 +190,64 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#151718',
+    backgroundColor: Colors.background,
   },
   content: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: Spacing.xl,
   },
   title: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#2596be',
+    color: Colors.primary,
     textAlign: 'center',
     marginBottom: 10,
     fontFamily: Fonts.sans,
   },
   subtitle: {
     fontSize: 18,
-    color: '#ECEDEE',
+    color: Colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: Spacing.xxl,
     fontFamily: Fonts.sans,
   },
   form: {
     width: '100%',
   },
   input: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 8,
-    padding: 16,
+    backgroundColor: Colors.backgroundDark,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
     fontSize: 16,
-    color: '#ECEDEE',
-    marginBottom: 16,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.md,
     fontFamily: Fonts.sans,
     borderWidth: 1,
-    borderColor: '#3a3a3a',
+    borderColor: Colors.border,
   },
   button: {
-    backgroundColor: '#2596be',
-    borderRadius: 8,
-    padding: 16,
+    backgroundColor: Colors.primary,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: Spacing.sm,
   },
   buttonDisabled: {
     opacity: 0.6,
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.backgroundDark,
     fontSize: 16,
     fontWeight: '600',
     fontFamily: Fonts.sans,
   },
   switchButton: {
-    marginTop: 20,
+    marginTop: Spacing.lg,
     alignItems: 'center',
   },
   switchText: {
-    color: '#2596be',
+    color: Colors.accent,
     fontSize: 14,
     fontFamily: Fonts.sans,
   },

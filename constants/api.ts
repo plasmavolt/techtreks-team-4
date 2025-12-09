@@ -19,8 +19,11 @@ const getApiBaseUrl = () => {
     // For physical Android device, change this to your computer's IP
     return 'http://10.0.2.2:3000';
   } else {
-    // iOS simulator and web can use localhost
-    return 'http://localhost:3000';
+    // iOS: Use local IP address (works for both simulator and physical device)
+    // For iOS Simulator, you can also use 'http://localhost:3000'
+    // For physical iOS device, use your computer's local IP (e.g., 10.16.76.160)
+    // Update this IP address if your computer's IP changes
+    return 'http://10.16.76.160:3000';
   }
 };
 

@@ -10,21 +10,33 @@ const getApiBaseUrl = () => {
   // Check if we have an environment variable set
   // You can set EXPO_PUBLIC_API_URL in your .env file
   if (process.env.EXPO_PUBLIC_API_URL) {
+    console.log('Using EXPO_PUBLIC_API_URL:', process.env.EXPO_PUBLIC_API_URL);
     return process.env.EXPO_PUBLIC_API_URL;
   }
 
   // Default based on platform
-  if (Platform.OS === 'android') {
+  const platform = Platform.OS;
+  console.log('Platform detected:', platform);
+  
+  if (platform === 'android') {
     // Android emulator uses 10.0.2.2 to access host machine's localhost
     // For physical Android device, change this to your computer's IP
-    return 'http://10.0.2.2:3000';
+    const url = 'http://10.0.2.2:3000';
+    console.log('Using Android API URL:', url);
+    return url;
   } else {
-    // iOS simulator and web can use localhost
-    return 'http://localhost:3000';
+    // iOS: Use local IP address (works for both simulator and physical device)
+    // For iOS Simulator, you can also use 'http://localhost:3000'
+    // For physical iOS device, use your computer's local IP (e.g., 10.16.76.160)
+    // Update this IP address if your computer's IP changes
+    const url = 'http://10.16.76.160:3000';
+    console.log('Using iOS API URL:', url);
+    return url;
   }
 };
 
 export const API_URL = getApiBaseUrl();
+console.log('API_URL resolved to:', API_URL);
 
 // API Endpoints
 export const API_ENDPOINTS = {
@@ -40,3 +52,5 @@ export const API_ENDPOINTS = {
     GET_ALL: `${API_URL}/api/locations`,
   },
 };
+
+console.log('API_ENDPOINTS.LOCATIONS.GET_ALL:', API_ENDPOINTS.LOCATIONS.GET_ALL);

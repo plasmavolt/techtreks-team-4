@@ -85,6 +85,7 @@ const app = () => {
     try {
       setLoading(true)
       // Try to fetch from backend
+      console.log('Fetching from URL:', API_ENDPOINTS.LOCATIONS.GET_ALL)
       const response = await fetch(API_ENDPOINTS.LOCATIONS.GET_ALL)
       
       if (!response.ok) {
