@@ -19,11 +19,11 @@ interface Quest {
 const QUESTS: Quest[] = [
   {
     id: 'quest_1',
-    title: 'Foodie Adventure',
-    description: 'Visit 3 top-rated restaurants in the East Village',
+    title: 'Brooklyn Sweet Sweep',
+    description: 'Visit 3 bakeries in Brooklyn',
     locationIds: ['mock_1', 'mock_2', 'mock_3'],
     difficulty: 'easy',
-    points: 100,
+    points: 50,
     category: 'Food & Drink'
   },
   {
@@ -37,12 +37,12 @@ const QUESTS: Quest[] = [
   },
   {
     id: 'quest_3',
-    title: 'Brooklyn Bridge Walk',
-    description: 'Walk across the Brooklyn Bridge and visit nearby spots',
+    title: 'Bodega Cats',
+    description: 'Pet three bodega cats all over NYC',
     locationIds: ['mock_3'],
-    difficulty: 'easy',
-    points: 75,
-    category: 'Sightseeing'
+    difficulty: 'medium',
+    points: 100,
+    category: 'Adventure'
   },
   {
     id: 'quest_4',
@@ -148,13 +148,13 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: FontSize.xxxl,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: '#c92a2a',
     fontFamily: Fonts.display,
   },
 
   headerSubtitle: {
     fontSize: FontSize.md,
-    color: Colors.textSecondary,
+    color: 'beige',
     fontFamily: Fonts.sans,
     marginTop: Spacing.xs,
   },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   },
 
   categoryBadge: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: 'beige',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: BorderRadius.sm,
@@ -190,8 +190,8 @@ const styles = StyleSheet.create({
 
   categoryText: {
     fontSize: FontSize.xs,
-    fontWeight: '600',
-    color: Colors.accent,
+    fontWeight: 'bold',
+    color: '#c92a2a',
     fontFamily: Fonts.mono,
   },
 
@@ -204,22 +204,22 @@ const styles = StyleSheet.create({
   difficultyText: {
     fontSize: 10,
     fontWeight: 'bold',
-    color: Colors.background,
+    color: 'Colors.background',
     fontFamily: Fonts.mono,
   },
 
   questTitle: {
     fontSize: FontSize.xl,
     fontWeight: 'bold',
-    color: Colors.textPrimary,
-    fontFamily: Fonts.serif,
+    color: 'beige',
+    fontFamily: Fonts.display,
     marginBottom: Spacing.sm,
   },
 
   questDescription: {
-    fontSize: FontSize.md,
+    fontSize: FontSize.sm,
     color: Colors.textSecondary,
-    fontFamily: Fonts.sans,
+    fontFamily: Fonts.mono,
     lineHeight: 22,
     marginBottom: Spacing.md,
   },
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   pointsText: {
     fontSize: FontSize.xs,
     fontWeight: 'bold',
-    color: Colors.accent,
+    color: 'white',
     fontFamily: Fonts.mono,
   },
 })

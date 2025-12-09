@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: FontSize.xxxl,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: '#c92a2a',
     fontFamily: Fonts.display,
   },
 
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     backgroundColor: Colors.background,
     paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
+    paddingHorizontal: 5,
     borderRadius: BorderRadius.lg,
     ...Shadows.small,
   },
