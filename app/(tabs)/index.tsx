@@ -1,4 +1,5 @@
 import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme'
+import { API_ENDPOINTS } from '@/constants/config'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -79,7 +80,7 @@ const app = () => {
   const fetchLocations = async () => {
     try {
       setLoading(true)
-      const response = await fetch('http://216.165.95.190:3000/api/locations')
+      const response = await fetch(API_ENDPOINTS.LOCATIONS.GET_ALL)
       const data = await response.json()
       console.log('API Response:', data)
 
