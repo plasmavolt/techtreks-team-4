@@ -179,8 +179,6 @@ const app = () => {
   )
 }
 
-export default app
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
