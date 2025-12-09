@@ -49,19 +49,84 @@ const mockLocations: Location[] = [
   },
   {
     _id: 'mock_4',
-    name: 'Statue of Liberty',
-    type: 'place',
-    coordinates: { latitude: 40.6892, longitude: -74.0445 },
+    name: 'Martinez Grocery',
+    type: 'Market',
+    coordinates: { latitude: 40.683911937805796, longitude: -73.99535181701862 },
     address: { city: 'New York', state: 'NY' },
     categories: ['landmark']
   },
   {
     _id: 'mock_5',
-    name: 'Empire State Building',
-    type: 'place',
-    coordinates: { latitude: 40.7484, longitude: -73.9857 },
+    name: 'Quentin Deli Grocery',
+    type: 'Market',
+    coordinates: { latitude: 40.61489568975444, longitude:  -73.93830253041396 },
     address: { city: 'New York', state: 'NY' },
     categories: ['landmark']
+  },
+  {
+    _id: 'mock_6',
+    name: 'K&K Food Deli',
+    type: 'Market',
+    coordinates: { latitude: 40.711574826285286, longitude:  -73.99429081675319 },
+    address: { city: 'New York', state: 'NY' },
+    categories: ['landmark']
+  },
+  {
+    _id: 'mock_7',
+    name: 'Brooklyn Bridge Park Basketball Courts',
+    type: 'Sports',
+    coordinates: { latitude: 40.70045501463707, longitude: -73.99905898385467 },
+    address: { city: 'New York', state: 'NY' },
+    categories: ['landmark']
+  },
+ 
+  {
+    _id: 'mock_8',
+    name: 'West 4th Street Courts',
+    type: 'Market',
+    coordinates: { latitude: 40.73238082889741, longitude: -74.00048020847134 },
+    address: { city: 'New York', state: 'NY' },
+    categories: ['landmark']
+  },
+  {
+    _id: 'mock_9',
+    name: 'Adel\'s Famous Halal Food',
+    type: 'Food & Drink',
+    coordinates: { latitude: 40.75931649988379, longitude: -73.98116282879325 },
+    address: { city: 'New York', state: 'NY' },
+    categories: ['Food & Drink']
+  },
+  {
+    _id: 'mock_10',
+    name: 'Habibi Halal Express',
+    type: 'Food & Drink',
+    coordinates: { latitude: 40.87777416453969, longitude: -73.8913450348882 },
+    address: { city: 'New York', state: 'NY' },
+    categories: ['Food & Drink']
+  },
+  {
+    _id: 'mock_11',
+    name: 'Up A Notch',
+    type: 'Food & Drink',
+    coordinates: { latitude: 40.66967411924105, longitude: -73.98663696957699 },
+    address: { city: 'New York', state: 'NY' },
+    categories: ['Food & Drink']
+  },
+  {
+    _id: 'mock_12',
+    name: 'Mahmoud\'s Corner Halal Food Car',
+    type: 'Food & Drink',
+    coordinates: { latitude: 40.76205124644469, longitude: -73.91994109326656 },
+    address: { city: 'New York', state: 'NY' },
+    categories: ['Food & Drink']
+  },
+  {
+    _id: 'mock_13',
+    name: 'Best Halal Food',
+    type: 'Food & Drink',
+    coordinates: { latitude: 40.57811975798581, longitude: -74.16413672906623 },
+    address: { city: 'New York', state: 'NY' },
+    categories: ['Food & Drink']
   }
 ]
 
