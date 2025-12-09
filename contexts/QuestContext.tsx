@@ -1,5 +1,4 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
 import { useAuth } from './AuthContext';
 
 export interface Quest {
@@ -64,30 +63,30 @@ export function QuestProvider({ children }: { children: ReactNode }) {
         },
         {
           id: 'quest_2',
-          title: 'Historic Landmarks Tour',
-          description: 'Explore 4 iconic New York landmarks',
-          locationIds: ['mock_2', 'mock_3', 'mock_4', 'mock_5'],
+          title: 'Here Kitty Kitty',
+          description: 'Pet 3 bodega cats across markets',
+          locationIds: ['mock_4', 'mock_5', 'mock_6'],
           difficulty: 'medium',
           points: 200,
-          category: 'Sightseeing'
+          category: 'Animals'
         },
         {
           id: 'quest_3',
-          title: 'Bodega Cats',
-          description: 'Pet three bodega cats all over NYC',
-          locationIds: ['mock_3'],
+          title: 'Ball-o-holics',
+          description: 'Visit 2 basketball courts in NYC',
+          locationIds: ['mock_7', 'mock_8'],
           difficulty: 'medium',
           points: 100,
-          category: 'Adventure'
+          category: 'Sports/Recreation'
         },
         {
           id: 'quest_4',
-          title: 'Manhattan Explorer',
-          description: 'Visit all 5 major attractions across Manhattan',
-          locationIds: ['mock_1', 'mock_2', 'mock_3', 'mock_4', 'mock_5'],
+          title: 'In My Halal Cart Era',
+          description: 'Try a halal cart in every borough of NYC',
+          locationIds: ['mock_9', 'mock_10', 'mock_11', 'mock_12', 'mock_13'],
           difficulty: 'hard',
           points: 300,
-          category: 'Adventure'
+          category: 'Food & Drink'
         }
       ]
       
@@ -189,20 +188,7 @@ export function QuestProvider({ children }: { children: ReactNode }) {
   };
 
   const abandonQuest = () => {
-    Alert.alert(
-      'Abandon Quest',
-      `Do you want to abandon "${activeQuest?.title}"?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Abandon',
-          style: 'destructive',
-          onPress: async () => {
-            setActiveQuest(null);
-          }
-        }
-      ]
-    )
+    setActiveQuest(null);
     // TODO: Clear from AsyncStorage
     // await AsyncStorage.removeItem('activeQuest');
   };
