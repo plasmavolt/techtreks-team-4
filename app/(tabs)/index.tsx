@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from '@/constants/config'
 import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme'
 import { useQuests } from '@/contexts/QuestContext'
 import { useColorScheme } from '@/hooks/use-color-scheme'
@@ -83,11 +84,28 @@ const app = () => {
   const fetchLocations = async () => {
     try {
       setLoading(true)
-      // Use mock locations instead of fetching from backend
-      setLocations(mockLocations)
+      // Try to fetch from backend
+      const response = await fetch(API_ENDPOINTS.LOCATIONS.GET_ALL)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      console.log('API Response:', data)
+
+      // Check if data.data exists, otherwise use mock data
+      if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
+        setLocations(data.data)
+      } else {
+        console.warn('No locations data found in API response, using mock data')
+        setLocations(mockLocations)
+      }
     } catch (error) {
-      console.error('Error loading locations:', error)
-      setLocations([])
+      console.error('Error fetching locations from backend:', error)
+      console.log('Falling back to mock locations')
+      // Fallback to mock data if backend is unavailable
+      setLocations(mockLocations)
     } finally {
       setLoading(false)
     }
