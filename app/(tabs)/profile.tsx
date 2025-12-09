@@ -1,7 +1,9 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BorderRadius, Colors, FontSize, Fonts, Shadows, Spacing } from '@/constants/theme';
@@ -9,7 +11,95 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export default function TabTwoScreen() {
   const router = useRouter();
-  const { user, signOut } = useAuth();
+  const { user, signOut, updateProfile } = useAuth();
+
+  const [name, setName] = useState(user?.name || '');
+  const [profilePicture, setProfilePicture] = useState<string | null>(user?.profilePicture || null);
+  const [isEditingName, setIsEditingName] = useState(false);
+
+  const pickImage = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission needed', 'Sorry, we need camera roll permissions to set a profile picture!');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        const newUri = result.assets[0].uri;
+        setProfilePicture(newUri);
+        await updateProfile({ profilePicture: newUri });
+        Alert.alert('Success', 'Profile picture updated!');
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Alert.alert('Error', 'Failed to pick image. Please try again.');
+    }
+  };
+
+  const takePhoto = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission needed', 'Sorry, we need camera permissions to take a photo!');
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        const newUri = result.assets[0].uri;
+        setProfilePicture(newUri);
+        await updateProfile({ profilePicture: newUri });
+        Alert.alert('Success', 'Profile picture updated!');
+      }
+    } catch (error) {
+      console.error('Error taking photo:', error);
+      Alert.alert('Error', 'Failed to take photo. Please try again.');
+    }
+  };
+
+  const showImagePickerOptions = () => {
+    Alert.alert(
+      'Profile Picture',
+      'Choose an option',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Take Photo', onPress: takePhoto },
+        { text: 'Choose from Library', onPress: pickImage },
+        ...(profilePicture ? [{ text: 'Remove Photo', style: 'destructive' as const, onPress: () => {
+          setProfilePicture(null);
+          updateProfile({ profilePicture: undefined });
+        }}] : []),
+      ]
+    );
+  };
+
+  const handleSaveName = async () => {
+    if (name.trim()) {
+      const success = await updateProfile({ name: name.trim() });
+      if (success) {
+        Alert.alert('Success', 'Name updated!');
+        setIsEditingName(false);
+      } else {
+        Alert.alert('Error', 'Failed to update name. Please try again.');
+      }
+    } else {
+      setIsEditingName(false);
+      setName(user?.name || '');
+    }
+  };
 
   const handleSignOut = () => {
     Alert.alert(
@@ -44,9 +134,9 @@ export default function TabTwoScreen() {
         {user && (
           <View style={styles.profileCard}>
             {/* Profile Avatar */}
-            <View style={styles.avatarContainer}>
-              {user?.profilePicture ? (
-                <Image source={{ uri: user.profilePicture }} style={styles.avatarImage} />
+            <TouchableOpacity onPress={showImagePickerOptions} style={styles.avatarContainer}>
+              {profilePicture ? (
+                <Image source={{ uri: profilePicture }} style={styles.avatarImage} />
               ) : (
                 <View style={styles.avatar}>
                   <Text style={styles.avatarText}>
@@ -54,28 +144,45 @@ export default function TabTwoScreen() {
                   </Text>
                 </View>
               )}
-            </View>
+              <View style={styles.editIconContainer}>
+                <MaterialIcons name="camera-alt" size={20} color="#fff" />
+              </View>
+            </TouchableOpacity>
 
             {/* User Info */}
             <View style={styles.userInfo}>
-              {user.name ? (
-                <Text style={styles.userName}>{user.name}</Text>
+              {isEditingName ? (
+                <View style={styles.nameEditContainer}>
+                  <TextInput
+                    style={styles.nameInput}
+                    value={name}
+                    onChangeText={setName}
+                    autoFocus
+                    onBlur={handleSaveName}
+                    onSubmitEditing={handleSaveName}
+                    placeholder="Enter your name"
+                    placeholderTextColor="#999"
+                  />
+                </View>
               ) : (
-                <TouchableOpacity onPress={() => router.push('/edit-profile')}>
-                  <Text style={[styles.userName, styles.addNameText]}>Add Name</Text>
-                </TouchableOpacity>
+                <View style={styles.nameContainer}>
+                  {user.name ? (
+                    <>
+                      <Text style={styles.userName}>{name}</Text>
+                      <TouchableOpacity onPress={() => setIsEditingName(true)} style={styles.editNameButton}>
+                        <MaterialIcons name="edit" size={18} color={Colors.accent} />
+                      </TouchableOpacity>
+                    </>
+                  ) : (
+                    <TouchableOpacity onPress={() => setIsEditingName(true)}>
+                      <Text style={[styles.userName, styles.addNameText]}>Add Name</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               )}
               <Text style={styles.userId}>@{user.id}</Text>
             </View>
 
-            {/* Profile Actions */}
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => router.push('/edit-profile')}
-            >
-              <MaterialIcons name="edit" size={20} color={Colors.background} />
-              <Text style={styles.editButtonText}>Edit Profile</Text>
-            </TouchableOpacity>
           </View>
         )}
 
@@ -182,6 +289,21 @@ const styles = StyleSheet.create({
 
   avatarContainer: {
     marginBottom: Spacing.md,
+    position: 'relative',
+  },
+
+  editIconContainer: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: Colors.background,
   },
 
   avatar: {
@@ -213,6 +335,32 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
 
+  nameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+
+  nameEditContainer: {
+    width: '80%',
+  },
+
+  nameInput: {
+    fontSize: FontSize.xxl,
+    fontWeight: 'bold',
+    color: Colors.textPrimary,
+    fontFamily: Fonts.serif,
+    textAlign: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: Colors.primary,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+
+  editNameButton: {
+    padding: 4,
+  },
+
   userName: {
     fontSize: FontSize.xxl,
     fontWeight: 'bold',
@@ -230,23 +378,6 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     color: Colors.textLight,
     fontFamily: Fonts.mono,
-  },
-
-  editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.primary,
-    paddingVertical: 8,
-    paddingHorizontal: Spacing.lg,
-    borderRadius: BorderRadius.sm,
-    gap: Spacing.sm,
-  },
-
-  editButtonText: {
-    color: Colors.background,
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    fontFamily: Fonts.sans,
   },
 
   settingsSection: {
