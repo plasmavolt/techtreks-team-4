@@ -121,12 +121,6 @@ const app = () => {
           </View>
         </View>
 
-        {isActive && (
-          <View style={styles.activeIndicator}>
-            <Text style={styles.activeIndicatorText}>ACTIVE</Text>
-          </View>
-        )}
-
         {isCompleted && (
           <View style={styles.completedOverlay}>
             <Text style={styles.completedText}>✓ COMPLETED</Text>
@@ -341,23 +335,6 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontFamily: Fonts.mono,
     textAlign: 'center',
-  },
-
-  activeIndicator: {
-    position: 'absolute',
-    top: Spacing.md,
-    right: Spacing.md,
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: BorderRadius.sm,
-  },
-
-  activeIndicatorText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: Colors.background,
-    fontFamily: Fonts.mono,
   },
 
   completedOverlay: {

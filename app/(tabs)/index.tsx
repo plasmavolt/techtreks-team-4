@@ -244,20 +244,29 @@ const app = () => {
         showsMyLocationButton={true}
         onPress={() => setSelectedLocation(null)}
       >
-        {locations.map((location) => (
-          <Marker
-            key={location._id}
-            coordinate={{
-              latitude: location.coordinates.latitude,
-              longitude: location.coordinates.longitude,
-            }}
-            onPress={(e) => {
-              e.stopPropagation()
-              console.log('Marker pressed:', location.name)
-              setSelectedLocation(location)
-            }}
-          />
-        ))}
+        {locations
+          .filter((location) => {
+            // If there's an active quest, only show locations for that quest
+            if (activeQuest) {
+              return activeQuest.locationIds.includes(location._id)
+            }
+            // If no active quest, show all locations
+            return true
+          })
+          .map((location) => (
+            <Marker
+              key={location._id}
+              coordinate={{
+                latitude: location.coordinates.latitude,
+                longitude: location.coordinates.longitude,
+              }}
+              onPress={(e) => {
+                e.stopPropagation()
+                console.log('Marker pressed:', location.name)
+                setSelectedLocation(location)
+              }}
+            />
+          ))}
       </MapView>
 
       {activeQuest && (
